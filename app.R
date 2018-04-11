@@ -1,5 +1,6 @@
-reticulate::use_condaenv('myhybrid')
 
+reticulate::use_condaenv('myhybrid', required = TRUE)
+#reticulate::use_virtualenv('/home/myhybrid', required = TRUE)
 library(reticulate)
 library(purrr)
 library(tibble)
@@ -119,13 +120,18 @@ ui <- material_page(
 
 # Dashboard Logic
 server <- function(input, output, session) {
-
+  update_material_text_box(session, 'start', 'Colorado School of Mines')
+  update_material_text_box(session, 'end', 'Coors Golden CO')
+  
+  start <- reactive({input$start})
+  end <- reactive({input$end})
+    
   start_db <- debounce(
-    reactive({input$start}), 2000
+    reactive({start()}), 2000
   )
   
   end_db <- debounce(
-    reactive({input$end}), 2000
+    reactive({end()}), 2000
   )
   
   route <- reactive({
@@ -134,10 +140,17 @@ server <- function(input, output, session) {
     material_spinner_show(session, 'map')
     material_spinner_show(session, 'cycle')
     route <- get_route(start_db(), end_db())
+    if (route[[1]]$legs[[1]]$distance$value > 241000) {
+      route <- NULL
+      showNotification('Sorry, please select a trip < 150 miles long!')
+      material_spinner_hide(session, 'map')
+      material_spinner_hide(session, 'cycle')
+    }
     route
   })
   
   cycle <- reactive({
+    req(route())
     create_cycle(route(), input$smooth)
   })
   
@@ -177,7 +190,7 @@ server <- function(input, output, session) {
   })
   
   output$baseline <- renderText({
-    req(sim_results())
+     req(sim_results())
     sprintf('
       <h3> %d </h3>
       <p> Sticker MPG </p>
@@ -185,7 +198,7 @@ server <- function(input, output, session) {
       <h3> %d </h3>
       <p> Simulated Trip MPG </p>
     ', 
-            sim_results()[[1]]$sticker_mpg,
+            ifelse(is.numeric(sim_results()[[1]]$sticker_mpg), sim_results()[[1]]$sticker_mpg, NA),
             hr(),
             round(sim_results()[[1]]$mpgge))
   })
@@ -199,7 +212,7 @@ server <- function(input, output, session) {
       <h3> %d </h3>
       <p> Simulated Trip MPG </p>
     ', 
-            sim_results()[[2]]$sticker_mpg,
+            ifelse(is.numeric(sim_results()[[1]]$sticker_mpg), sim_results()[[1]]$sticker_mpg, NA),
             hr(),
             round(sim_results()[[2]]$mpgge))
   })

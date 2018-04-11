@@ -6,7 +6,7 @@ This application is a demo of RStudio's reticulate and Shiny packages. The demo 
 # Steps to Reproduce
 
 1. Restore the R environment using packrat
-2. Restore the Python environment using conda
+2. Restore the Python environment using conda or virtualenv
 3. Download NREL's [FASTSim tool](https://www.nrel.gov/transportation/fastsim.html) version `py-fastsim-2018a` and place the unzipped folder into the repo. The following modifications are required:
 a. Modify line 56 of `/src/FASTSim.py` to read `csv_path = './/py-fastsim-2018a//cycles//'+cycle_name+'.csv'`
 b. Modify line 77 to read `    with open('.//py-fastsim-2018a//docs//FASTSim_py_veh_db.csv','r') as csvfile:`
