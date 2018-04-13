@@ -1,6 +1,6 @@
 
-reticulate::use_condaenv('myhybrid', required = TRUE)
-#reticulate::use_virtualenv('/home/myhybrid', required = TRUE)
+#reticulate::use_condaenv('myhybrid', required = TRUE)
+reticulate::use_virtualenv('/home/myhybrid', required = TRUE)
 library(reticulate)
 library(purrr)
 library(tibble)
@@ -212,7 +212,7 @@ server <- function(input, output, session) {
       <h3> %d </h3>
       <p> Simulated Trip MPG </p>
     ', 
-            ifelse(is.numeric(sim_results()[[1]]$sticker_mpg), sim_results()[[1]]$sticker_mpg, NA),
+            ifelse(is.numeric(sim_results()[[2]]$sticker_mpg), sim_results()[[2]]$sticker_mpg, NA),
             hr(),
             round(sim_results()[[2]]$mpgge))
   })
