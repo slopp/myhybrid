@@ -1,5 +1,5 @@
 argparse==1.2.1
-certifi==2018.1.18
+certifi==2022.12.7
 chardet==3.0.4
 googlemaps==2.5.1
 idna==2.6
